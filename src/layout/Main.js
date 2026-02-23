@@ -1,6 +1,7 @@
 import './Main.css';
 import MovieList from '../components/MovieList';
 import Preloader from '../components/Preloader';
+import Search from '../components/Search.js';
 import React from 'react';
 
 class Main extends React.Component {
@@ -17,13 +18,21 @@ class Main extends React.Component {
         .then(data=>this.setState({movies: data.Search}));
     }
 
+    searchMovie = (str, type = 'all') =>
+    {
+         fetch(`https://omdbapi.com/?apikey=94dbc433&s=${str}${type !== 'all' ? `&type=${type}` : ''}`)
+            .then(response => response.json())
+            .then(data => this.setState({movies: data.Search}));
+    }
+
     render() {
         return (
             <div className='main'>
                 <div className='wrap'>
+                   {/* <MovieList movies={this.state.movies} /> */}
+                    <Search searchMovie={this.searchMovie} />
                     {
-                      this.state.movies.length === 0 ? <Preloader /> :
-                      <MovieList movies ={this.state.movies}/>
+                        this.state.movies != null && this.state.movies.length === 0 ? <Preloader /> : <MovieList movies={this.state.movies} />
                     }
                 </div>
             </div>
